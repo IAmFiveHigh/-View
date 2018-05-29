@@ -77,7 +77,7 @@ class ScannerView: UIView {
         
     }
     
-    private func startRunning() {
+    func startRunning() {
         isReading = true
         session.startRunning()
         
@@ -85,7 +85,7 @@ class ScannerView: UIView {
     }
     
     
-    private func stopRunning() {
+    func stopRunning() {
         if let timer1 = timer {
             if timer1.isValid {
                 timer1.invalidate()

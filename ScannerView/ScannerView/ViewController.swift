@@ -16,6 +16,7 @@ class ViewController: UIViewController {
         let sc = ScannerView(frame: CGRect(x: 0, y: 64, width: UIScreen.main.bounds.width, height: 100))
         view.addSubview(sc)
         sc.delegate = self
+    
     }
 
 }
@@ -23,6 +24,8 @@ class ViewController: UIViewController {
 extension ViewController: ScannerViewDelegate {
     func result(_ result: String?) {
         print(result   )
+        
+        
     }
     
     
