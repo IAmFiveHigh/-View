@@ -11,7 +11,20 @@ import UIKit
 class ViewController: UIViewController {
 
     
+    override func viewDidLoad() {
+        
+        let sc = ScannerView(frame: CGRect(x: 0, y: 64, width: UIScreen.main.bounds.width, height: 100))
+        view.addSubview(sc)
+        sc.delegate = self
+    }
 
+}
 
+extension ViewController: ScannerViewDelegate {
+    func result(_ result: String?) {
+        print(result   )
+    }
+    
+    
 }
 

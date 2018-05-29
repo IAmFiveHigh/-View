@@ -9,15 +9,27 @@
 import UIKit
 import AVFoundation
 
+protocol ScannerViewDelegate: class {
+    func result(_ result: String?)
+}
+
 class ScannerView: UIView {
 
     private var timer: Timer? = nil
     private let session: AVCaptureSession = AVCaptureSession()
-    private var isReading: Bool = false
+    var isReading: Bool = false
     private let lineImageView = UIImageView(image: UIImage(named: "wq_code_scanner_line"))
+    
+    weak var delegate: ScannerViewDelegate?
+    
+    private var height: CGFloat = 0
+    private var width: CGFloat = 0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        height = frame.height
+        width = frame.width
         
         setup()
     }
@@ -36,6 +48,9 @@ class ScannerView: UIView {
                 
             }
         }
+        
+//        lineImageView.frame = CGRect(x: 0, y: 0, width: width, height: 5)
+//        addSubview(lineImageView)
 
     }
     
@@ -55,21 +70,49 @@ class ScannerView: UIView {
         
         let layer = AVCaptureVideoPreviewLayer(session: session)
         layer.videoGravity = .resizeAspectFill
-        layer.frame = self.frame
-        self.layer.addSublayer(layer)
+        DispatchQueue.main.async {
+            layer.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
+            self.layer.addSublayer(layer)
+        }
+        
     }
     
     private func startRunning() {
         isReading = true
         session.startRunning()
         
-        timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(moveUpAndDownLine), userInfo: nil, repeats: true)
+//        timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(moveUpAndDownLine), userInfo: nil, repeats: true)
     }
     
     
-    @objc private func moveUpAndDownLine() {
-        var y = lineImageView.frame.origin.y
+    private func stopRunning() {
+        if let timer1 = timer {
+            if timer1.isValid {
+                timer1.invalidate()
+                timer = nil
+            }
+        }
+        session.stopRunning()
     }
+    
+//    @objc private func moveUpAndDownLine() {
+//        let y = lineImageView.frame.origin.y
+//        if (height - self.lineImageView.frame.size.height == y) {
+//            UIView.beginAnimations("asa", context: nil)
+//            UIView.setAnimationDuration(1.5)
+//            var frame = lineImageView.frame
+//            frame.origin.y = 0
+//            lineImageView.frame = frame
+//            UIView.commitAnimations()
+//        }else if (0 == y){
+//            UIView.beginAnimations("asa", context: nil)
+//            UIView.setAnimationDuration(1.5)
+//            var frame = lineImageView.frame
+//            frame.origin.y = height - lineImageView.frame.height
+//            lineImageView.frame = frame
+//            UIView.commitAnimations()
+//        }
+//    }
     
     /*
         - (void)moveUpAndDownLine {
@@ -94,5 +137,16 @@ class ScannerView: UIView {
 }
 
 extension ScannerView: AVCaptureMetadataOutputObjectsDelegate {
-    
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        guard isReading else {return}
+        
+        if (metadataObjects.count > 0) {
+            isReading = false
+            if let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject {
+                if let delegate = delegate {
+                    delegate.result(metadataObject.stringValue)
+                }
+            }
+        }
+    }
 }
