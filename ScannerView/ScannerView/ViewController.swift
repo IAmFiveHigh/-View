@@ -23,9 +23,7 @@ class ViewController: UIViewController {
 
 extension ViewController: ScannerViewDelegate {
     func result(_ result: String?) {
-        print(result   )
-        
-        
+        print(result)
     }
     
     

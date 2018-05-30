@@ -114,26 +114,7 @@ class ScannerView: UIView {
 //        }
 //    }
     
-    /*
-        - (void)moveUpAndDownLine {
-    CGFloat Y = self.lineImageView.frame.origin.y;
-    if (_height + self.lineImageView.frame.size.width - 5 == Y) {
-    [UIView beginAnimations: @"asa" context:nil];
-    [UIView setAnimationDuration:1.5];
-    CGRect frame = self.lineImageView.frame;
-    frame.origin.y = _height;
-    self.lineImageView.frame = frame;
-    [UIView commitAnimations];
-    } else if (_height == Y){
-    [UIView beginAnimations: @"asa" context:nil];
-    [UIView setAnimationDuration:1.5];
-    CGRect frame = self.lineImageView.frame;
-    frame.origin.y = _height + self.lineImageView.frame.size.width - 5;
-    self.lineImageView.frame = frame;
-    [UIView commitAnimations];
-    }
-    }
- */
+
 }
 
 extension ScannerView: AVCaptureMetadataOutputObjectsDelegate {
